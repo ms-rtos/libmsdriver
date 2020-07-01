@@ -34,14 +34,9 @@ LOCAL_TARGET_NAME := libmsdriver.a
 #*********************************************************************************************************
 LOCAL_SRCS :=  \
 src/eeprom/ms_drv_xx24xx.c \
-src/net/ms_drv_encx24j600.c \
-src/i2c/ms_drv_i2c_bitdang.c \
-src/gpio/ms_drv_pca95xx.c \
 src/touch/ms_drv_gt9xx.c \
 src/sensor/ms_drv_ahtxx.c \
-src/sensor/ms_drv_ap3216c.c \
-src/net/ms_drv_ksz8851.c \
-src/rtc/ms_drv_rx8025.c
+src/sensor/ms_drv_ap3216c.c
 
 #*********************************************************************************************************
 # Header file search path (eg. LOCAL_INC_PATH := -I"Your hearder files search path")
