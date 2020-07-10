@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 MS-RTOS Team.
+ * Copyright (c) 2015-2020 ACOINFO Co., Ltd.
  * All rights reserved.
  *
  * Detailed license information can be found in the LICENSE file.

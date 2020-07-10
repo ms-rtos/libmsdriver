@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2020 MS-RTOS Team.
+ * Copyright (c) 2015-2020 ACOINFO Co., Ltd.
  * All rights reserved.
  *
  * Detailed license information can be found in the LICENSE file.
@@ -310,6 +310,8 @@ ms_err_t ms_ap3216c_dev_create(const char *path, const char *i2c_bus_name, ms_ui
         } else {
             err = MS_ERR_KERN_HEAP_NO_MEM;
         }
+    } else {
+        err = MS_ERR_ARG_NULL_PTR;
     }
 
     return err;

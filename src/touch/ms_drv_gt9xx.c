@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 MS-RTOS Team.
+ * Copyright (c) 2015-2020 ACOINFO Co., Ltd.
  * All rights reserved.
  *
  * Detailed license information can be found in the LICENSE file.
@@ -605,7 +605,8 @@ ms_err_t ms_gt9xx_dev_create(const char *path, const char *i2c_bus_name, ms_uint
             /*
              * Check touch screen device info
              */
-            if (__gt9xx_port_check(port) == MS_ERR_NONE) {
+            err = __gt9xx_port_check(port);
+            if (err == MS_ERR_NONE) {
 
                 /*
                  * Get touch screen device info
