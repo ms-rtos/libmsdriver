@@ -343,9 +343,9 @@ static ms_size_t __ahtxx_fill_sensor_data(privinfo_t *priv, ms_sensor_data_t *se
         ms_fifo_get(&priv->data_fifo, &cache_data, sizeof(ms_ahtxx_cache_t));
 
         sensor_data->type = cache_data.type;
-        if (NS_SENSOR_TYPE_TEMP == cache_data.type) {
+        if (MS_SENSOR_TYPE_TEMP == cache_data.type) {
             sensor_data->u.temp = (ms_int32_t)cache_data.u.temperature;
-        } else if (NS_SENSOR_TYPE_HUMI == cache_data.type) {
+        } else if (MS_SENSOR_TYPE_HUMI == cache_data.type) {
             sensor_data->u.humi = (ms_int32_t)cache_data.u.humidity;
         }
 
@@ -376,10 +376,10 @@ static ms_ssize_t __ahtxx_read(ms_ptr_t ctx, ms_io_file_t *file, ms_ptr_t buf, m
                 int i;
 
                 for (i = 0; i < data_count; i++) {
-                    if (NS_SENSOR_TYPE_TEMP == sensor_data->type) {
+                    if (MS_SENSOR_TYPE_TEMP == sensor_data->type) {
                         sensor_data->u.temp = (ms_int32_t)priv->temperature;
 
-                    } else if (NS_SENSOR_TYPE_HUMI == sensor_data->type) {
+                    } else if (MS_SENSOR_TYPE_HUMI == sensor_data->type) {
                         sensor_data->u.humi = (ms_int32_t)priv->humidity;
 
                     } else {
@@ -533,10 +533,10 @@ static ms_err_t __ahtxx_set_work_param(privinfo_t *priv, ms_ahtxx_param_t *ahtxx
 
         sensor_data = ahtxx_param->overflow_line;
         for (i = 0; i < ahtxx_param->overflow_line_nr; i++) {
-            if (NS_SENSOR_TYPE_TEMP == sensor_data->type) {
+            if (MS_SENSOR_TYPE_TEMP == sensor_data->type) {
                 priv->temp_line_enable[AHTXX_OVERFLOW_LINE] = MS_TRUE;
                 priv->temp_line[AHTXX_OVERFLOW_LINE] = sensor_data->u.temp;
-            } else if (NS_SENSOR_TYPE_HUMI == sensor_data->type) {
+            } else if (MS_SENSOR_TYPE_HUMI == sensor_data->type) {
                 priv->humi_line_enable[AHTXX_OVERFLOW_LINE] = MS_TRUE;
                 priv->humi_line[AHTXX_OVERFLOW_LINE] = sensor_data->u.humi;
             } else {
@@ -547,10 +547,10 @@ static ms_err_t __ahtxx_set_work_param(privinfo_t *priv, ms_ahtxx_param_t *ahtxx
 
         sensor_data = ahtxx_param->underflow_line;
         for (i = 0; i < ahtxx_param->underflow_line_nr; i++) {
-            if (NS_SENSOR_TYPE_TEMP == sensor_data->type) {
+            if (MS_SENSOR_TYPE_TEMP == sensor_data->type) {
                 priv->temp_line_enable[AHTXX_UNDERFLOW_LINE] = MS_TRUE;
                 priv->temp_line[AHTXX_UNDERFLOW_LINE] = sensor_data->u.temp;
-            } else if (NS_SENSOR_TYPE_HUMI == sensor_data->type) {
+            } else if (MS_SENSOR_TYPE_HUMI == sensor_data->type) {
                 priv->humi_line_enable[AHTXX_UNDERFLOW_LINE] = MS_TRUE;
                 priv->humi_line[AHTXX_UNDERFLOW_LINE] = sensor_data->u.humi;
             } else {
@@ -591,9 +591,9 @@ static ms_err_t __ahtxx_get_work_param(privinfo_t *priv, ms_ahtxx_param_t *ahtxx
 
         sensor_data = ahtxx_param->overflow_line;
         for (i = 0; i < ahtxx_param->overflow_line_nr; i++) {
-            if (NS_SENSOR_TYPE_TEMP == sensor_data->type && priv->temp_line_enable[AHTXX_OVERFLOW_LINE]) {
+            if (MS_SENSOR_TYPE_TEMP == sensor_data->type && priv->temp_line_enable[AHTXX_OVERFLOW_LINE]) {
                 sensor_data->u.temp = priv->temp_line[AHTXX_OVERFLOW_LINE];
-            } else if (NS_SENSOR_TYPE_HUMI == sensor_data->type && priv->humi_line_enable[AHTXX_OVERFLOW_LINE]) {
+            } else if (MS_SENSOR_TYPE_HUMI == sensor_data->type && priv->humi_line_enable[AHTXX_OVERFLOW_LINE]) {
                 sensor_data->u.humi = priv->humi_line[AHTXX_OVERFLOW_LINE];
             } else {
                 return MS_ERR;
@@ -603,9 +603,9 @@ static ms_err_t __ahtxx_get_work_param(privinfo_t *priv, ms_ahtxx_param_t *ahtxx
 
         sensor_data = ahtxx_param->underflow_line;
         for (i = 0; i < ahtxx_param->underflow_line_nr; i++) {
-            if (NS_SENSOR_TYPE_TEMP == sensor_data->type && priv->temp_line_enable[AHTXX_UNDERFLOW_LINE]) {
+            if (MS_SENSOR_TYPE_TEMP == sensor_data->type && priv->temp_line_enable[AHTXX_UNDERFLOW_LINE]) {
                 sensor_data->u.temp = priv->temp_line[AHTXX_UNDERFLOW_LINE];
-            } else if (NS_SENSOR_TYPE_HUMI == sensor_data->type && priv->humi_line_enable[AHTXX_UNDERFLOW_LINE]) {
+            } else if (MS_SENSOR_TYPE_HUMI == sensor_data->type && priv->humi_line_enable[AHTXX_UNDERFLOW_LINE]) {
                 sensor_data->u.humi = priv->humi_line[AHTXX_UNDERFLOW_LINE];
             } else {
                 return MS_ERR;
@@ -634,10 +634,10 @@ static void __ahtxx_measure_job(ms_ptr_t arg)
          * Init cache data
          */
         cache_data[0].timestamp = priv->timestamp;
-        cache_data[0].type = NS_SENSOR_TYPE_TEMP;
+        cache_data[0].type = MS_SENSOR_TYPE_TEMP;
         cache_data[0].u.temperature = (ms_int32_t)priv->temperature;
         cache_data[1].timestamp = priv->timestamp;
-        cache_data[1].type = NS_SENSOR_TYPE_HUMI;
+        cache_data[1].type = MS_SENSOR_TYPE_HUMI;
         cache_data[1].u.humidity = (ms_int32_t)priv->humidity;
 
         if ((priv->mode & MS_AHTXX_MODE_FILTER_MODE_MASK) == MS_AHTXX_MODE_FILTER_DISABLE) {

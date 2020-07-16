@@ -213,13 +213,13 @@ static ms_ssize_t __ap3216c_read(ms_ptr_t ctx, ms_io_file_t *file, ms_ptr_t buf,
             int i;
 
             for (i = 0; i < data_count; i++) {
-                if (NS_SENSOR_TYPE_IR == sensor_data->type) {
+                if (MS_SENSOR_TYPE_IR == sensor_data->type) {
                     sensor_data->u.ir = priv->ir;
 
-                } else if (NS_SENSOR_TYPE_LIGHT == sensor_data->type) {
+                } else if (MS_SENSOR_TYPE_LIGHT == sensor_data->type) {
                     sensor_data->u.light = priv->als;
 
-                } else if (NS_SENSOR_TYPE_PROXIMITY == sensor_data->type) {
+                } else if (MS_SENSOR_TYPE_PROXIMITY == sensor_data->type) {
                     sensor_data->u.proximity = priv->ps;
 
                 } else {
