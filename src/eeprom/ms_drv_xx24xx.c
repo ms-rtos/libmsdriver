@@ -6,7 +6,7 @@
  *
  * File: ms_drv_xx24xx.c xx24xx EEPROM device driver.
  *
- * Author: Jiao.jinxing <jiaojixing@acoinfo.com>
+ * Author: Jiao.jinxing <jiaojinxing@acoinfo.com>
  *
  */
 

@@ -6,7 +6,7 @@
  *
  * File: ms_drv_sensor.h Sensor device driver.
  *
- * Author: Jiao.jinxing <jiaojixing@acoinfo.com>
+ * Author: Jiao.jinxing <jiaojinxing@acoinfo.com>
  *
  */
 
@@ -20,23 +20,23 @@ extern "C" {
 /*
  * Sensor types
  */
-#define NS_SENSOR_TYPE_NONE             (0)
-#define NS_SENSOR_TYPE_ACCE             (1)  /* Accelerometer     */
-#define NS_SENSOR_TYPE_GYRO             (2)  /* Gyroscope         */
-#define NS_SENSOR_TYPE_MAG              (3)  /* Magnetometer      */
-#define NS_SENSOR_TYPE_TEMP             (4)  /* Temperature       */
-#define NS_SENSOR_TYPE_HUMI             (5)  /* Relative Humidity */
-#define NS_SENSOR_TYPE_BARO             (6)  /* Barometer         */
-#define NS_SENSOR_TYPE_LIGHT            (7)  /* Ambient light     */
-#define NS_SENSOR_TYPE_PROXIMITY        (8)  /* Proximity         */
-#define NS_SENSOR_TYPE_HR               (9)  /* Heart Rate        */
-#define NS_SENSOR_TYPE_TVOC             (10) /* TVOC Level        */
-#define NS_SENSOR_TYPE_NOISE            (11) /* Noise Loudness    */
-#define NS_SENSOR_TYPE_STEP             (12) /* Step sensor       */
-#define NS_SENSOR_TYPE_FORCE            (13) /* Force sensor      */
-#define NS_SENSOR_TYPE_DUST             (14) /* Dust sensor       */
-#define NS_SENSOR_TYPE_ECO2             (15) /* eCO2 sensor       */
-#define NS_SENSOR_TYPE_IR               (16) /* IR sensor         */
+#define MS_SENSOR_TYPE_NONE             (0)
+#define MS_SENSOR_TYPE_ACCE             (1)  /* Accelerometer     */
+#define MS_SENSOR_TYPE_GYRO             (2)  /* Gyroscope         */
+#define MS_SENSOR_TYPE_MAG              (3)  /* Magnetometer      */
+#define MS_SENSOR_TYPE_TEMP             (4)  /* Temperature       */
+#define MS_SENSOR_TYPE_HUMI             (5)  /* Relative Humidity */
+#define MS_SENSOR_TYPE_BARO             (6)  /* Barometer         */
+#define MS_SENSOR_TYPE_LIGHT            (7)  /* Ambient light     */
+#define MS_SENSOR_TYPE_PROXIMITY        (8)  /* Proximity         */
+#define MS_SENSOR_TYPE_HR               (9)  /* Heart Rate        */
+#define MS_SENSOR_TYPE_TVOC             (10) /* TVOC Level        */
+#define MS_SENSOR_TYPE_NOISE            (11) /* Noise Loudness    */
+#define MS_SENSOR_TYPE_STEP             (12) /* Step sensor       */
+#define MS_SENSOR_TYPE_FORCE            (13) /* Force sensor      */
+#define MS_SENSOR_TYPE_DUST             (14) /* Dust sensor       */
+#define MS_SENSOR_TYPE_ECO2             (15) /* eCO2 sensor       */
+#define MS_SENSOR_TYPE_IR               (16) /* IR sensor         */
 
 /*
  * Sensor unit types
