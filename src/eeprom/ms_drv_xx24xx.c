@@ -109,6 +109,7 @@ static const ms_ee24xx_geom_t ms_ee24xx_devices[] = {
  */
 typedef struct {
     ms_i2c_device_t i2c_dev;
+    ms_handle_t     lock;
 
     /*
      * Expanded from geometry
@@ -189,12 +190,17 @@ static ms_ssize_t __xx24xx_read(ms_ptr_t ctx, ms_io_file_t *file, ms_ptr_t buf, 
             msgs[1U].buf       = rbuf;
             msgs[1U].len       = rlen;
 
+            (void)ms_mutex_lock(priv->lock, MS_TIMEOUT_FOREVER);
+
             if (ms_i2c_device_trans(&priv->i2c_dev, msgs, 2U) == 2U) {
                 ret = len;
             } else {
                 ms_thread_set_errno(EIO);
                 ret = -1;
             }
+
+            (void)ms_mutex_unlock(priv->lock);
+
         } else {
             ms_thread_set_errno(EFAULT);
             ret = -1;
@@ -301,6 +307,8 @@ static ms_ssize_t __xx24xx_write(ms_ptr_t ctx, ms_io_file_t *file, ms_const_ptr_
                     cnt = wlen;
                 }
 
+                (void)ms_mutex_lock(priv->lock, MS_TIMEOUT_FOREVER);
+
                 do {
                     if (pageoff > 0U) {
                         ret = __xx24xx_writepage(priv, pos, wbuf, cnt);
@@ -346,6 +354,8 @@ static ms_ssize_t __xx24xx_write(ms_ptr_t ctx, ms_io_file_t *file, ms_const_ptr_
                         }
                     }
                 } while (MS_FALSE);
+
+                (void)ms_mutex_unlock(priv->lock);
 
                 if (ret == 0) {
                     ret = len;
@@ -429,54 +439,62 @@ ms_err_t ms_xx24xx_dev_create(const char *path, const char *i2c_bus_name, ms_uin
 
                 bzero(priv, sizeof(privinfo_t));
 
-                priv->i2c_dev.nnode.name = MS_XX24XX_DRV_NAME;
-                priv->i2c_dev.clk_speed  = MS_I2C_CLK_SPEED_STANDARD;
-                priv->i2c_dev.addr       = dev_addr;
-                priv->i2c_dev.addrlen    = 7U;
-                priv->i2c_dev.ctx        = MS_NULL;
-
-                err = ms_i2c_device_attach(&priv->i2c_dev, i2c_bus_name);
+                err = ms_mutex_create("xx24xx_lock", MS_WAIT_TYPE_PRIO, &priv->lock);
                 if (err == MS_ERR_NONE) {
-                    /*
-                     * Expand device geometry from compacted info
-                     */
-                    priv->size       = 128U << ms_ee24xx_devices[dev_type].bytes;
-                    priv->pgsize     =   8U << ms_ee24xx_devices[dev_type].pagesize;
-                    priv->addrlen    =         ms_ee24xx_devices[dev_type].addrlen;
-                    priv->haddrbits  =         ms_ee24xx_devices[dev_type].abits;
-                    priv->haddrshift = 0U;
 
-                    /*
-                     * Apply special properties
-                     */
-                    if (ms_ee24xx_devices[dev_type].special) {
-                        if (dev_type == EEPROM_24XX00) {
-                            /*
-                             * Ultra small 16-byte EEPROM
-                             */
-                            priv->size = 16U;
+                    priv->i2c_dev.nnode.name = MS_XX24XX_DRV_NAME;
+                    priv->i2c_dev.clk_speed  = MS_I2C_CLK_SPEED_STANDARD;
+                    priv->i2c_dev.addr       = dev_addr;
+                    priv->i2c_dev.addrlen    = 7U;
+                    priv->i2c_dev.ctx        = MS_NULL;
 
-                            /*
-                             * The device only has BYTE write,
-                             * which is emulated with 1-byte pages
-                             */
-                            priv->pgsize = 1U;
+                    err = ms_i2c_device_attach(&priv->i2c_dev, i2c_bus_name);
+                    if (err == MS_ERR_NONE) {
+                        /*
+                         * Expand device geometry from compacted info
+                         */
+                        priv->size       = 128U << ms_ee24xx_devices[dev_type].bytes;
+                        priv->pgsize     =   8U << ms_ee24xx_devices[dev_type].pagesize;
+                        priv->addrlen    =         ms_ee24xx_devices[dev_type].addrlen;
+                        priv->haddrbits  =         ms_ee24xx_devices[dev_type].abits;
+                        priv->haddrshift = 0U;
 
-                        } else if (dev_type == EEPROM_24XX1025) {
-                            /*
-                             * Microchip alien part where the address MSB is << 2 bits
-                             */
-                            ms_printk(MS_PK_ERR, "Device 24xx1025 is not supported for the moment, TODO.\n");
-                            err = MS_ERR;
+                        /*
+                         * Apply special properties
+                         */
+                        if (ms_ee24xx_devices[dev_type].special) {
+                            if (dev_type == EEPROM_24XX00) {
+                                /*
+                                 * Ultra small 16-byte EEPROM
+                                 */
+                                priv->size = 16U;
+
+                                /*
+                                 * The device only has BYTE write,
+                                 * which is emulated with 1-byte pages
+                                 */
+                                priv->pgsize = 1U;
+
+                            } else if (dev_type == EEPROM_24XX1025) {
+                                /*
+                                 * Microchip alien part where the address MSB is << 2 bits
+                                 */
+                                ms_printk(MS_PK_ERR, "Device 24xx1025 is not supported for the moment, TODO.\n");
+                                err = MS_ERR;
+                            }
+                        }
+
+                        if (err == MS_ERR_NONE) {
+                            err = ms_io_device_register(&dev->dev, path, MS_XX24XX_DRV_NAME, &dev->priv);
+                        }
+
+                        if (err != MS_ERR_NONE) {
+                            ms_i2c_device_detach(&priv->i2c_dev, i2c_bus_name);
                         }
                     }
 
-                    if (err == MS_ERR_NONE) {
-                        err = ms_io_device_register(&dev->dev, path, MS_XX24XX_DRV_NAME, &dev->priv);
-                    }
-
                     if (err != MS_ERR_NONE) {
-                        ms_i2c_device_detach(&priv->i2c_dev, i2c_bus_name);
+                        (void)ms_mutex_destroy(priv->lock);
                     }
                 }
 
