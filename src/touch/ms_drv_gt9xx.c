@@ -405,7 +405,6 @@ static int __gt9xx_get_state(privinfo_t *priv, ms_touch_event_t *touch_event)
             /*
              * No invalid point detected.
              */
-            priv->last_points_num = 0;
             touch_event->touch_detected = 0;
             ret = 0;
         }
