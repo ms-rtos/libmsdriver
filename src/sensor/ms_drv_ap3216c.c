@@ -170,7 +170,7 @@ static int __ap3216c_open(ms_ptr_t ctx, ms_io_file_t *file, int oflag, ms_mode_t
     privinfo_t *priv = ctx;
     int         ret;
 
-    if (ms_atomic_inc(MS_IO_DEV_REF(file)) == 2) {
+    if (ms_atomic_inc(MS_IO_DEV_REF(file)) == 1) {
         if (__ap3216c_init(priv) == MS_ERR_NONE) {
             ret = 0;
         } else {
