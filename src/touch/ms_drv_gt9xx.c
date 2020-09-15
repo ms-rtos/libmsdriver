@@ -461,6 +461,7 @@ static int __gt9xx_open(ms_ptr_t ctx, ms_io_file_t *file, int oflag, ms_mode_t m
             ret = -1;
         }
     } else {
+        ms_atomic_dec(MS_IO_DEV_REF(file));
         ms_thread_set_errno(EBUSY);
         ret = -1;
     }
