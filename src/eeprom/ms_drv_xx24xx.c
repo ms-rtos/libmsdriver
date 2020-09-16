@@ -392,6 +392,35 @@ static int __xx24xx_fstat(ms_ptr_t ctx, ms_io_file_t *file, ms_stat_t *buf)
 }
 
 /*
+ * Control device
+ */
+static int __xx24xx_ioctl(ms_ptr_t ctx, ms_io_file_t *file, int cmd, ms_ptr_t arg)
+{
+    privinfo_t *priv = ctx;
+    int ret;
+
+    switch (cmd) {
+    case MS_EEPROM_CMD_GET_GEOMETRY:
+        if (ms_access_ok(arg, sizeof(ms_eeprom_geometry_t), MS_ACCESS_W)) {
+            ms_eeprom_geometry_t *geometry = (ms_eeprom_geometry_t *)arg;
+            geometry->size = priv->size;
+            ret = 0;
+        } else {
+            ms_thread_set_errno(EFAULT);
+            ret = -1;
+        }
+        break;
+
+    default:
+        ms_thread_set_errno(EINVAL);
+        ret = -1;
+        break;
+    }
+
+    return ret;
+}
+
+/*
  * Device operating function set
  */
 static ms_io_driver_ops_t ms_xx24xx_drv_ops = {
@@ -401,6 +430,7 @@ static ms_io_driver_ops_t ms_xx24xx_drv_ops = {
         .read   = __xx24xx_read,
         .write  = __xx24xx_write,
         .fstat  = __xx24xx_fstat,
+        .ioctl  = __xx24xx_ioctl,
 };
 
 /*
