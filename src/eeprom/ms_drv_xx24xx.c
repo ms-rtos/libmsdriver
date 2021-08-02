@@ -457,6 +457,7 @@ ms_err_t ms_xx24xx_drv_register(void)
 ms_err_t ms_xx24xx_dev_create(const char *path, const char *i2c_bus_name, ms_uint16_t dev_addr, ms_xx24xx_type_t dev_type)
 {
     ms_xx24xx_dev_t *dev;
+    const char *name;
     ms_err_t err;
 
     if ((path != MS_NULL) && (i2c_bus_name != MS_NULL)) {
@@ -472,7 +473,14 @@ ms_err_t ms_xx24xx_dev_create(const char *path, const char *i2c_bus_name, ms_uin
                 err = ms_mutex_create("xx24xx_lock", MS_WAIT_TYPE_PRIO, &priv->lock);
                 if (err == MS_ERR_NONE) {
 
-                    priv->i2c_dev.nnode.name = MS_XX24XX_DRV_NAME;
+                    /*
+                     * Find Device Name
+                     */
+                    name = path + strlen(path) - 1;
+                    while (name > path && *name != '/') {
+                        name--;
+                    }
+                    priv->i2c_dev.nnode.name = name;
                     priv->i2c_dev.clk_speed  = MS_I2C_CLK_SPEED_STANDARD;
                     priv->i2c_dev.addr       = dev_addr;
                     priv->i2c_dev.addrlen    = 7U;
